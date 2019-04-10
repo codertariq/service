@@ -1,0 +1,26 @@
+{
+    "name": "trt/service",
+    "description": "Basic Service Provider for TeamTRT application",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "TeamTRT",
+            "email": "support@teamtrt.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "TRT\\Service\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TRT\\Service\\TRTServiceProvider"
+            ]
+        }
+    }
+}

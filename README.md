@@ -1,3 +1,3 @@
-#Mint Service#
+#TRT Service#
 
-###Basic Service Provider for ScriptMint application###
+###Basic Service Provider for TeamTRT application###
