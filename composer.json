@@ -1,5 +1,5 @@
 {
-    "name": "trt/service",
+    "name": "teamtrt/service",
     "description": "Basic Service Provider for TeamTRT application",
     "type": "library",
     "license": "MIT",
