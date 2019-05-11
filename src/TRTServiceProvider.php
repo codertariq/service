@@ -1,6 +1,6 @@
 <?php
 
-namespace Mint\Service;
+namespace TRT\Service;
 
 use Illuminate\Support\ServiceProvider;
 
