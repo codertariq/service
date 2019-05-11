@@ -2,16 +2,10 @@
 namespace TRT\Service\Repositories;
 ini_set('max_execution_time', 0);
 
-use App\Models\Configuration\Employee\Designation;
-use App\Models\Configuration\Employee\EmployeeCategory;
 use App\Models\Configuration\Permission as PermissionModel;
 use App\Models\Configuration\Role as RoleModel;
-use App\Models\Employee\Employee;
-use App\Models\Utility\EmailTemplate;
-use App\Repositories\Configuration\LocaleRepository;
 use App\Repositories\Configuration\PermissionRepository;
 use App\Repositories\Configuration\RoleRepository;
-use App\Repositories\Utility\EmailTemplateRepository;
 use App\User;
 use App\UserPreference;
 use Illuminate\Support\Str;
@@ -22,10 +16,6 @@ use Spatie\Permission\Models\Role;
 class InstallRepository {
 	protected $role;
 	protected $permission;
-	protected $email_template;
-	protected $locale;
-	protected $employee_category;
-	protected $designation;
 
 	/**
 	 * Instantiate a new controller instance.
@@ -34,18 +24,10 @@ class InstallRepository {
 	 */
 	public function __construct(
 		RoleRepository $role,
-		PermissionRepository $permission,
-		EmailTemplateRepository $email_template,
-		LocaleRepository $locale,
-		EmployeeCategory $employee_category,
-		Designation $designation
+		PermissionRepository $permission
 	) {
 		$this->role = $role;
 		$this->permission = $permission;
-		$this->email_template = $email_template;
-		$this->locale = $locale;
-		$this->employee_category = $employee_category;
-		$this->designation = $designation;
 	}
 
 	/**
@@ -153,12 +135,6 @@ class InstallRepository {
 		$this->populatePermission();
 
 		$this->assignPermission();
-
-		$this->populateLocale();
-
-		$this->populateEmailTemplate();
-
-		$this->populateEmployeeCategory();
 
 		$this->makeAdmin($params);
 
@@ -284,61 +260,7 @@ class InstallRepository {
 		\DB::table('role_has_permissions')->insert($role_permission);
 	}
 
-	/**
-	 * Populate default locale
-	 */
-	public function populateLocale() {
-		if (!$this->locale->findByLocale('en')) {
-			$this->locale->create([
-				'locale' => 'en',
-				'name' => 'English',
-			]);
-		}
-	}
-
-	/**
-	 * Populate default employee category
-	 */
-	public function populateEmployeeCategory() {
-		$employee_category = $this->employee_category->create([
-			'name' => config('config.system_admin_employee_category'),
-		]);
-
-		$this->populateDesignation($employee_category);
-	}
-
-	/**
-	 * Populate default designation
-	 */
-	public function populateDesignation($employee_category) {
-		$this->designation->create([
-			'name' => config('config.system_admin_designation'),
-			'employee_category_id' => $employee_category->id,
-			'top_designation_id' => null,
-		]);
-	}
-
-	/**
-	 * Populate default email template
-	 */
-	public function populateEmailTemplate() {
-		$templates = array();
-		foreach (getVar('template') as $key => $value) {
-			if (!$this->email_template->findBySlug($key)) {
-				$templates[] = array(
-					'is_default' => 1,
-					'name' => toWord($key),
-					'category' => isset($value['category']) ? $value['category'] : '',
-					'slug' => $key,
-					'subject' => isset($value['subject']) ? $value['subject'] : '',
-					'body' => view('emails.default.' . $key)->render(),
-				);
-			}
-		}
-		if (count($templates)) {
-			EmailTemplate::insert($templates);
-		}
-	}
+	
 
 	/**
 	 * Insert default admin details
