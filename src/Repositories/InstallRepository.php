@@ -271,18 +271,11 @@ class InstallRepository {
 		$user->username = gv($params, 'username');
 		$user->uuid = Str::uuid();
 		$user->password = bcrypt(gv($params, 'password', 'abcd1234'));
-		$user->activation_token = Str::uuid();
 		$user->status = 'activated';
 		$user->save();
 
 		$user->assignRole(config('system.default_role.admin'));
-		$employee = new Employee;
-		$employee->first_name = gv($params, 'first_name');
-		$employee->last_name = gv($params, 'last_name');
-		$employee->contact_number = gv($params, 'contact_number');
-		$employee->user_id = $user->id;
-		$employee->save();
-
+		
 		$user_preference = new UserPreference;
 		$user->userPreference()->save($user_preference);
 	}
